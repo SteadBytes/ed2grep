@@ -1,0 +1,66 @@
+#! /bin/sh
+
+. "${srcdir=.}/init.sh"; path_prepend_ ../
+
+fail=0
+
+# basic literal string matches
+out=$(echo "Hello, world" | grep "Hello")
+if test "$out" != "Hello, world"; then
+  echo "Match output incorrect, test \#1 failed"
+  fail=1
+fi
+
+echo "Hello, world" > test.txt
+out=$(grep "Hello" test.txt)
+if test "$out" != "Hello, world"; then
+  echo "Match output incorrect, test \#2 failed"
+  fail=1
+fi
+
+# basic literal string multiline matches
+out=$(echo $'Hello,\n world' | grep "Hello")
+if test "$out" != "Hello,"; then
+  echo "Match output incorrect, test \#3 failed"
+  fail=1
+fi
+
+echo $'Hello,\n world' > test.txt
+out=$( grep "Hello" test.txt)
+if test "$out" != "Hello,"; then
+  echo "Match output incorrect, test \#4 failed"
+  fail=1
+fi
+
+# TODO: Test all character classes
+# basic punctuation matches
+out=$(echo "Hello, world"| grep "[[:punct:]]")
+if test "$out" != "Hello, world"; then
+  echo "Match output incorrect, test \#5 failed"
+  fail=1
+fi
+
+echo "Hello, world" > test.txt
+out=$(grep "[[:punct:]]" test.txt)
+if test "$out" != "Hello, world"; then
+  echo "Match output incorrect, test \#6 failed"
+  fail=1
+fi
+
+# anchor matches
+out=$(echo "Hello, world"| grep "^world")
+if test "$out" != ""; then
+  echo "Match output incorrect, test \#7 failed"
+  fail=1
+fi
+
+echo "Hello, world" > test.txt
+out=$(grep "^world" test.txt)
+if test "$out" != ""; then
+  echo "Match output incorrect, test \#8 failed"
+  fail=1
+fi
+
+rm -f test.txt
+
+exit $fail

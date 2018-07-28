@@ -1,0 +1,54 @@
+#! /bin/sh
+
+. "${srcdir=.}/init.sh"; path_prepend_ ../
+
+fail=0
+
+# empty input
+
+# should return 0 found a match
+out=$(echo "" | grep "")
+if test $? -ne 0 ; then
+  echo "Status: Wrong status code, test \#1 failed"
+  fail=1
+fi
+
+out=$(grep "" /dev/null)
+if test $? -ne 1 ; then
+  echo "Status: Wrong status code, test \#2 failed"
+  fail=1
+fi
+
+# non-empty input
+
+# should return 0 found a match
+out=$(echo "abcd" | grep "abcd") #> /dev/null 2>&1
+if test $? -ne 0 ; then
+  echo "Status: Wrong status code, test \#3 failed"
+  fail=1
+fi
+
+echo "abcd" > test.txt
+out=$(grep "abcd" test.txt)# > /dev/null 2>&1
+if test $? -ne 0 ; then
+  echo "Status: Wrong status code, test \#4 failed"
+  fail=1
+fi
+
+# should return 1 found no match
+out=$(echo "abcd" | grep "1234")
+if test $? -ne 1 ; then
+  echo "Status: Wrong status code, test \#5 failed"
+  fail=1
+fi
+
+echo "abcd" > test.txt
+out=$(grep "1234" test.txt)
+if test $? -ne 1 ; then
+  echo "Status: Wrong status code, test \#6 failed"
+  fail=1
+fi
+
+rm -f test.txt
+
+exit $fail
