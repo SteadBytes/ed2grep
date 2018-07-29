@@ -41,16 +41,13 @@ int lastc;
 char savedfile[FNSIZE];
 char file[FNSIZE];
 char linebuf[LBSIZE];
-char rhsbuf[LBSIZE / 2];
 char expbuf[ESIZE + 4];
 int given;
 unsigned int *addr1, *addr2;
 unsigned int *dot, *dol, *zero;
 char genbuf[LBSIZE];
 long count;
-char *nextip;
 char *linebp;
-int ninbuf;
 int io;
 int pflag; /* if true at beginning of commands loop -> print current buffer */
 long lseek(int, long, int);
@@ -59,7 +56,6 @@ int creat(char *, int);
 int read(int, char *, int);
 int write(int, char *, int);
 int close(int);
-int fork(void);
 int execl(char *, ...);
 int exit(int);
 int wait(int *);
@@ -89,10 +85,8 @@ char *braslist[NBRA];
 char *braelist[NBRA];
 int nbra;
 int subnewa;
-int subolda;
 int fchange;
 int wrapp;
-int bpagesize = 20;
 unsigned nlall = 128;
 
 char *mktemp(char *);
@@ -102,7 +96,6 @@ char *realloc(char *, int);
 
 char *getblock(unsigned int atl, int iof);
 char *getline(unsigned int tl);
-char *place(char *sp, char *l1, char *l2);
 void add(int i);
 int advance(char *lp, char *ep);
 int append(int (*f)(void), unsigned int *a);
@@ -112,25 +105,15 @@ void callunix(void);
 int cclass(char *set, int c, int af);
 void commands(void);
 void compile(int eof);
-int compsub(void);
-void dosub(void);
 void error(char *s);
 int execute(unsigned int *addr);
-void exfile(void);
-void filename(int comm);
 void gdelete(void);
 int getchr(void);
-int getcopy(void);
-int getfile(void);
 int getnum(void);
-int getsub(void);
 int gettty(void);
-int gety(void);
 void global(int k);
 void init(void);
 unsigned int *address(void);
-void join(void);
-void move(int cflag);
 void newline(void);
 void nonzero(void);
 void onhup(int n);
@@ -142,12 +125,9 @@ void putfile(void);
 int putline(void);
 void puts(char *sp);
 void quit(int n);
-void rdelete(unsigned int *ad1, unsigned int *ad2);
-void reverse(unsigned int *a1, unsigned int *a2);
 void setwide(void);
 void setnoaddr(void);
 void squeeze(int i);
-void substitute(int inglob);
 
 jmp_buf savej;
 
@@ -196,8 +176,8 @@ int main(int argc, char *argv[])
   {
     p1 = "/dev/stdout";
     p2 = savedfile;
-    /* 
-      copies a null-terminated string, with p1 ending up pointing to the end 
+    /*
+      copies a null-terminated string, with p1 ending up pointing to the end
       of the source string and p2 pointing to the end of the destination string
     */
     while (*p2++ = *p1++)
@@ -229,9 +209,8 @@ void commands(void)
 {
   unsigned int *a1;
   int c;
-  int temp;
   char lastsep;
-  /* 
+  /*
     main editor loop, repeatedly reads commands from stdin until `q` is entered
   */
   for (;;)
