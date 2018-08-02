@@ -101,7 +101,6 @@ int advance(char *lp, char *ep);
 int append(int (*f)(void), unsigned int *a);
 int backref(int i, char *lp);
 void blkio(int b, char *buf, int (*iofcn)(int, char *, int));
-void callunix(void);
 int cclass(char *set, int c, int af);
 void commands(void);
 void compile(int eof);
@@ -314,11 +313,6 @@ void commands(void)
       count = addr2 - zero;
       putd();
       putchr('\n');
-      continue;
-
-    /* shell escape - execute command via sh */
-    case '!':
-      callunix();
       continue;
 
     /* null command */
@@ -693,30 +687,6 @@ void add(int i)
   squeeze(0);
   newline();
   append(gettty, addr2);
-}
-
-void callunix(void)
-{
-  SIG_TYP savint;
-  int pid, rpid;
-  int retcode;
-
-  setnoaddr();
-  if ((pid = fork()) == 0)
-  {
-    signal(SIGHUP, oldhup);
-    signal(SIGQUIT, oldquit);
-    execl("/bin/sh", "sh", "-t", 0);
-    exit(0100);
-  }
-  savint = signal(SIGINT, SIG_IGN);
-  while ((rpid = wait(&retcode)) != pid && rpid != -1)
-    ;
-  signal(SIGINT, savint);
-  if (vflag)
-  {
-    puts("!");
-  }
 }
 
 void quit(int n)
