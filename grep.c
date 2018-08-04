@@ -40,14 +40,14 @@ int peekc;
 int lastc;
 char savedfile[FNSIZE];
 char file[FNSIZE];
-char linebuf[LBSIZE];
-char expbuf[ESIZE + 4];
+char linebuf[LBSIZE];   /* buffer of current line */
+char expbuf[ESIZE + 4]; /* buffer to hold regular expression */
 int given;
 unsigned int *addr1, *addr2;
 unsigned int *dot, *dol, *zero;
 char genbuf[LBSIZE];
 long count;
-char *linebp;
+char *linebp; /* pointer to current line buffer */
 int io;
 int pflag; /* if true at beginning of commands loop -> print current buffer */
 long lseek(int, long, int);
@@ -150,6 +150,7 @@ int main(int argc, char *argv[])
   if (signal(SIGTERM, SIG_IGN) == SIG_DFL)
     signal(SIGTERM, quit);
   argv++;
+  /* process options i.e. '-foo' */
   while (argc > 1 && **argv == '-')
   {
     switch ((*argv)[1])
@@ -557,6 +558,8 @@ int getchr(void)
     globp = 0;
     return (EOF);
   }
+  /* read on byte from stdin and store at c */
+  /* if NULL or EOF set lastc to EOF and return EOF */
   if (read(0, &c, 1) <= 0)
     return (lastc = EOF);
   lastc = c & 0177;
@@ -569,6 +572,7 @@ int gettty(void)
 
   if (rc = gety())
     return (rc);
+  /* entered '.' followed by enter -> finish add command */
   if (linebuf[0] == '.' && linebuf[1] == 0)
     return (EOF);
   return (0);
@@ -592,12 +596,12 @@ int gety(void)
     }
     if ((c &= 0177) == 0)
       continue;
-    *p++ = c;
+    *p++ = c; /* put c into linebuf array */
     if (p >= &linebuf[LBSIZE - 2])
       error(Q);
   }
 
-  *p++ = 0;
+  *p++ = 0; /* null terminate linebuf */
   return (0);
 }
 
@@ -606,8 +610,9 @@ int append(int (*f)(void), unsigned int *a)
   unsigned int *a1, *a2, *rdot;
   int nline, tl;
 
-  nline = 0;
+  nline = 0; /* number of new lines added */
   dot = a;
+  /* read one line at a time */
   while ((*f)() == 0)
   {
     if ((dol - zero) + 1 >= nlall)
