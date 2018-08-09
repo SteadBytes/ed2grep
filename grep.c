@@ -141,67 +141,17 @@ SIG_TYP oldquit;
    argv = argument vector */
 int main(int argc, char *argv[])
 {
-  char *p1, *p2;
-  SIG_TYP oldintr;
-
-  oldquit = signal(SIGQUIT, SIG_IGN);
-  oldhup = signal(SIGHUP, SIG_IGN);
-  oldintr = signal(SIGINT, SIG_IGN);
-  if (signal(SIGTERM, SIG_IGN) == SIG_DFL)
-    signal(SIGTERM, quit);
+  argc--;
   argv++;
-  /* process options i.e. '-foo' */
-  while (argc > 1 && **argv == '-')
-  {
-    switch ((*argv)[1])
-    {
 
-    case '\0':
-      vflag = 0;
-      break;
+  /* currently accept only regex as argument */
+  if (argc != 1)
+    exit(2);
 
-    case 'q':
-      signal(SIGQUIT, SIG_DFL);
-      vflag = 1;
-      break;
+  compile(*argv);
 
-    case 'o': /* output to file i.e. `ed -o out.txt` */
-      oflag = 1;
-      break;
-    }
-    argv++;
-    argc--;
-  }
-  if (oflag)
-  {
-    p1 = "/dev/stdout";
-    p2 = savedfile;
-    /*
-      copies a null-terminated string, with p1 ending up pointing to the end
-      of the source string and p2 pointing to the end of the destination string
-    */
-    while (*p2++ = *p1++)
-      ;
-  }
-  if (argc > 1)
-  {
-    p1 = *argv;
-    p2 = savedfile;
-    while (*p2++ = *p1++)
-      if (p2 >= &savedfile[sizeof(savedfile)])
-        p2--;
-    globp = "r";
-  }
-  zero = (unsigned *)malloc(nlall * sizeof(unsigned));
-  tfname = mktemp(tmpXXXXX);
-  init();
-  if (oldintr != SIG_IGN)
-    signal(SIGINT, onintr);
-  if (oldhup != SIG_IGN)
-    signal(SIGHUP, onhup);
-  setjmp(savej);
-  commands();
-  quit(0);
+  execute((char *)NULL);
+
   return 0;
 }
 
