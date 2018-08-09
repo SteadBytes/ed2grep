@@ -2,7 +2,6 @@
  * Editor
  */
 
-#include <signal.h>
 #include <setjmp.h>
 
 /* make BLKSIZE and LBSIZE 512 for smaller machines */
@@ -105,14 +104,6 @@ void init(void);
 void puts(char *sp);
 void quit(int n);
 
-jmp_buf savej;
-
-typedef void (*SIG_TYP)(int);
-SIG_TYP oldhup;
-SIG_TYP oldquit;
-/* these two are not in ansi, but we need them */
-#define SIGHUP 1  /* hangup */
-#define SIGQUIT 3 /* quit (ASCII FS) */
 
 /* argc = argument count
    argv = argument vector */
@@ -156,7 +147,6 @@ void error(char *s)
     close(io);
     io = -1;
   }
-  longjmp(savej, 1);
 }
 
 int getchr(void)
