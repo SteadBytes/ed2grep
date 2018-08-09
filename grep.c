@@ -2,17 +2,14 @@
  * Editor
  */
 
-#include <setjmp.h>
 
 /* make BLKSIZE and LBSIZE 512 for smaller machines */
 #define BLKSIZE 4096
-#define NBLK 2047
 
 #define NULL 0
 #define FNSIZE 128
 #define LBSIZE 4096
 #define ESIZE 256
-#define GBSIZE 256
 #define NBRA 5
 #define EOF -1
 #define KSIZE 9
@@ -37,16 +34,11 @@ char T[] = "TMP";
 
 int peekc;
 int lastc;
-char savedfile[FNSIZE];
 char file[FNSIZE];
 char linebuf[LBSIZE];   /* buffer of current line */
 char expbuf[ESIZE + 4]; /* buffer to hold regular expression */
-int given;
-unsigned int *addr1, *addr2;
 unsigned int *dot, *dol, *zero;
-char genbuf[LBSIZE];
 long count;
-char *linebp; /* pointer to current line buffer */
 int io;
 int pflag; /* if true at beginning of commands loop -> print current buffer */
 long lseek(int, long, int);
@@ -60,38 +52,18 @@ int exit(int);
 int wait(int *);
 int unlink(char *);
 
-int vflag = 1;
 int oflag; /* output to file */
 int listf;
 int listn;
 int col;
 char *globp;
-int tfile = -1;
 int tline;
-char *tfname;
 char *loc1;
 char *loc2;
-char ibuff[BLKSIZE];
-int iblock = -1;
-char obuff[BLKSIZE];
-int oblock = -1;
-int ichanged;
-int nleft;
-char WRERR[] = "WRITE ERROR";
-int names[26];
-int anymarks;
 char *braslist[NBRA];
 char *braelist[NBRA];
 int nbra;
-int subnewa;
-int fchange;
 int wrapp;
-unsigned nlall = 128;
-
-char *mktemp(char *);
-char tmpXXXXX[50] = "/tmp/eXXXXX";
-char *malloc(int);
-char *realloc(char *, int);
 
 int advance(char *lp, char *ep);
 int backref(int i, char *lp);
