@@ -205,24 +205,6 @@ int getchr(void)
   return (lastc);
 }
 
-void init(void)
-{
-  int *markp;
-
-  close(tfile);
-  tline = 2;
-  for (markp = names; markp < &names[26];)
-    *markp++ = 0;
-  subnewa = 0;
-  anymarks = 0;
-  iblock = -1;
-  oblock = -1;
-  ichanged = 0;
-  close(creat(tfname, 0600));
-  tfile = open(tfname, 2);
-  dot = dol = zero;
-}
-
 void compile(char *eof)
 {
   int c;
