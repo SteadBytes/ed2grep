@@ -124,20 +124,6 @@ void error(char *s)
 int getchr(void)
 {
   char c;
-  if (lastc = peekc)
-  {
-    peekc = 0;
-    return (lastc);
-  }
-  if (globp)
-  {
-    if ((lastc = *globp++) != 0)
-      return (lastc);
-    globp = 0;
-    return (EOF);
-  }
-  /* read on byte from stdin and store at c */
-  /* if NULL or EOF set lastc to EOF and return EOF */
   if (read(0, &c, 1) <= 0)
     return (lastc = EOF);
   lastc = c & 0177;
