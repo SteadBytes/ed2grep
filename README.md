@@ -37,3 +37,72 @@ root:x:0:0:root:/root:/bin/bash
 $ echo "hello" | grep hello
 hello
 ```
+
+## Approach
+
+1.  Reduce `ed` to have only append, regex, print and quit functionality
+2.  Ensure only minimal code is present to achieve step `1`
+3.  Read stdin and apply regex without editor
+
+  - Parse regex as single command line argument
+  - Apply regex to stdin
+  - Execute regex against stdin instead of editor buffer
+
+  ```
+  $ echo "some text" | grep text
+  some text
+  ```
+
+5.  Read from file
+  ```
+  # file1.txt
+  Hello, world!
+
+  $ grep Hello file1.txt
+  Hello, world!
+  ```
+6.  Read from multiple files
+  ```
+    # file1.txt
+  Hello, world!
+  
+  # file2.txt
+  Goodbye, world!
+
+  $ grep Hello file1.txt file2.txt
+  Hello, world!
+
+  $ grep Goodbye file1.txt file2.txt
+  Goodbye, world!
+
+  $ grep [:punct:] file1.txt file2.txt
+  Hello, world!
+  Goodbye, world!
+  ```
+7. Add filenames to matches for multiple files
+  ```
+    # file1.txt
+  Hello, world!
+
+  # file2.txt
+  Goodbye, world!
+
+  $ grep [:punct:] file1.txt file2.txt
+  file1.txt: Hello, world!
+  file2.txt: Goodbye, world!
+  ```
+8. Ensure proper exit status codes
+  ```
+  $ echo "Hello, world!" | grep hello
+  Hello, world!
+  $ echo $?
+  0
+
+  $ echo "Hello, world!" | grep foo
+  $ echo $?
+  1
+
+  $ echo "Hello, world!" | grep [:unkown-character-class:]
+  $ echo $?
+  1
+  ```
