@@ -140,49 +140,33 @@ void compile(char *eof)
 
   ep = expbuf;
   bracketp = bracket;
-  if ((c = getchr()) == '\n')
-  {
-    peekc = c;
-    c = eof;
-  }
-  if (c == eof)
-  {
-    if (*ep == 0)
-      error(Q);
-    return;
-  }
+
+  sp = eof;
+
   nbra = 0;
-  if (c == '^')
+    peekc = c;
+  lastep = 0;
+
+  if (sp == '^')
   {
-    c = getchr();
+    sp++;
     *ep++ = CCIRC;
   }
-  peekc = c;
-  lastep = 0;
+
   for (;;)
   {
     if (ep >= &expbuf[ESIZE])
       goto cerror;
-    c = getchr();
-    if (c == '\n')
-    {
-      peekc = c;
-      c = eof;
-    }
-    if (c == eof)
-    {
-      if (bracketp != bracket)
-        goto cerror;
-      *ep++ = CEOF;
-      return;
-    }
-    if (c != '*')
+    if ((c = *sp++) != '*')
       lastep = ep;
     switch (c)
     {
+    case '\0':
+      *ep++ = CEOF;
+      return;
 
     case '\\':
-      if ((c = getchr()) == '(')
+      if ((c = *sp++) == '(')
       {
         if (nbra >= NBRA)
           goto cerror;
@@ -225,7 +209,7 @@ void compile(char *eof)
       continue;
 
     case '$':
-      if ((peekc = getchr()) != eof && peekc != '\n')
+      if ((peekc = *sp++) != eof && peekc != '\n')
         goto defchar;
       *ep++ = CDOL;
       continue;
@@ -234,9 +218,9 @@ void compile(char *eof)
       *ep++ = CCL;
       *ep++ = 0;
       cclcnt = 1;
-      if ((c = getchr()) == '^')
+      if ((c = *sp++) == '^')
       {
-        c = getchr();
+        c = *sp++;
         ep[-2] = NCCL;
       }
       do
@@ -245,7 +229,7 @@ void compile(char *eof)
           goto cerror;
         if (c == '-' && ep[-1] != 0)
         {
-          if ((c = getchr()) == ']')
+          if ((c = *sp++) == ']')
           {
             *ep++ = '-';
             cclcnt++;
@@ -264,7 +248,7 @@ void compile(char *eof)
         cclcnt++;
         if (ep >= &expbuf[ESIZE])
           goto cerror;
-      } while ((c = getchr()) != ']');
+      } while ((c = *sp++) != ']');
       lastep[1] = cclcnt;
       continue;
 
