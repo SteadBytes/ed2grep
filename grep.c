@@ -264,6 +264,7 @@ cerror:
   error(Q);
 }
 
+/* TODO: addr should be 0 (stdin) - will be able to point to file eventually*/
 int execute(unsigned int *addr)
 {
   char *p1, *p2;
@@ -274,21 +275,36 @@ int execute(unsigned int *addr)
     braslist[c] = 0;
     braelist[c] = 0;
   }
-  p2 = expbuf;
-  if (addr == (unsigned *)0)
+  for (;;)
   {
-    if (*p2 == CCIRC)
-      return (0);
-    p1 = loc2;
+    /* track number of lines? */
+    p1 = linebuf;
+
+    while ((c = getchr()) != '\n')
+    {
+      if (c == EOF)
+      {
+        /* TODO: handle multiple files */
+        return;
+      }
+
+      *p1++ = c;
+      /* ensure at least one space left in buffer for null-termination */
+      if (p1 >= &linebuf[LBSIZE - 1])
+  {
+        break;
+      }
   }
-  else if (addr == zero)
-    return (0);
-  else
-    p1 = getline(*addr);
+    /* null terminate input */
+    *p1++ = '\0';
+    p1 = linebuf;
+    p2 = expbuf;
   if (*p2 == CCIRC)
   {
     loc1 = p1;
-    return (advance(p1, p2 + 1));
+      if (advance(p1, p2 + 1))
+        puts(linebuf);
+      continue;
   }
   /* fast check for first character */
   if (*p2 == CCHR)
@@ -301,10 +317,11 @@ int execute(unsigned int *addr)
       if (advance(p1, p2))
       {
         loc1 = p1;
-        return (1);
+          puts(linebuf);
+          continue;
       }
     } while (*p1++);
-    return (0);
+      continue;
   }
   /* regular algorithm */
   do
@@ -312,12 +329,13 @@ int execute(unsigned int *addr)
     if (advance(p1, p2))
     {
       loc1 = p1;
-      return (1);
+        puts(linebuf);
+        continue;
     }
   } while (*p1++);
   return (0);
 }
-
+}
 int advance(char *lp, char *ep)
 {
   char *curlp;
