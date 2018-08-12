@@ -1,18 +1,9 @@
-/*
- * Editor
- */
-
-
-/* make BLKSIZE and LBSIZE 512 for smaller machines */
-#define BLKSIZE 4096
-
 #define NULL 0
 #define FNSIZE 128
 #define LBSIZE 4096
 #define ESIZE 256
 #define NBRA 5
 #define EOF -1
-#define KSIZE 9
 
 #define CBRA 1
 #define CCHR 2
@@ -28,36 +19,28 @@
 #define STAR 01
 
 char Q[] = "";
-char T[] = "TMP";
 #define READ 0
 #define WRITE 1
 
 int peekc;
 int lastc;
-char file[FNSIZE];
 char linebuf[LBSIZE];   /* buffer of current line */
 char expbuf[ESIZE + 4]; /* buffer to hold regular expression */
-unsigned int *dot, *dol, *zero;
 long count;
 int io;
 int pflag; /* if true at beginning of commands loop -> print current buffer */
 long lseek(int, long, int);
 int open(char *, int);
-int creat(char *, int);
 int read(int, char *, int);
 int write(int, char *, int);
 int close(int);
-int execl(char *, ...);
 int exit(int);
-int wait(int *);
-int unlink(char *);
 
 int oflag; /* output to file */
 int listf;
 int listn;
 int col;
 char *globp;
-int tline;
 char *loc2;
 char *braslist[NBRA];
 char *braelist[NBRA];
