@@ -69,13 +69,12 @@ int backref(int i, char *lp);
 int cclass(char *set, int c, int af);
 void compile(char *eof);
 void error(char *s);
-int execute(unsigned int *addr);
+int execute(char *file);
 int getchr(void);
 void init(void);
 void puts(char *sp);
 void quit(int n);
-void print_matched_line(char *f);
-
+void print_matched_line(char *file);
 
 /* argc = argument count
    argv = argument vector */
@@ -264,8 +263,8 @@ cerror:
   error(Q);
 }
 
-/* TODO: addr should be 0 (stdin) - will be able to point to file eventually*/
-int execute(unsigned int *addr)
+/* TODO: file should be 0 (stdin) - will be able to point to file eventually*/
+int execute(char *file)
 {
   char *p1, *p2;
   int c;
@@ -302,7 +301,7 @@ int execute(unsigned int *addr)
   if (*p2 == CCIRC)
   {
       if (advance(p1, p2 + 1))
-        print_matched_line(addr);
+        print_matched_line(file);
       continue;
   }
   /* fast check for first character */
@@ -315,7 +314,7 @@ int execute(unsigned int *addr)
         continue;
       if (advance(p1, p2))
       {
-          print_matched_line(addr);
+          print_matched_line(file);
           break;
       }
     } while (*p1++);
@@ -326,7 +325,7 @@ int execute(unsigned int *addr)
   {
     if (advance(p1, p2))
     {
-        print_matched_line(addr);
+        print_matched_line(file);
         break;
     }
   } while (*p1++);
@@ -533,11 +532,9 @@ void putchr(int ac)
   }
   linp = lp;
 }
-  linp = lp;
-}
 
-void print_matched_line(char *f)
+void print_matched_line(char *file)
 {
-  /* TODO: If multiple files -> print filename (*f) first */
+  /* TODO: If multiple files -> print filename (*file) first */
   puts(linebuf);
 }
