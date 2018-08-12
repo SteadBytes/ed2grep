@@ -317,8 +317,7 @@ int execute(unsigned int *addr)
       if (advance(p1, p2))
       {
         loc1 = p1;
-          puts(linebuf);
-          continue;
+          break;
       }
     } while (*p1++);
       continue;
@@ -329,11 +328,9 @@ int execute(unsigned int *addr)
     if (advance(p1, p2))
     {
       loc1 = p1;
-        puts(linebuf);
-        continue;
+        break;
     }
   } while (*p1++);
-  return (0);
 }
 }
 int advance(char *lp, char *ep)
