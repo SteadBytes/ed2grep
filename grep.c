@@ -58,7 +58,6 @@ int listn;
 int col;
 char *globp;
 int tline;
-char *loc1;
 char *loc2;
 char *braslist[NBRA];
 char *braelist[NBRA];
@@ -301,7 +300,6 @@ int execute(unsigned int *addr)
     p2 = expbuf;
   if (*p2 == CCIRC)
   {
-    loc1 = p1;
       if (advance(p1, p2 + 1))
         print_matched_line(addr);
       continue;
@@ -316,7 +314,6 @@ int execute(unsigned int *addr)
         continue;
       if (advance(p1, p2))
       {
-        loc1 = p1;
           print_matched_line(addr);
           break;
       }
@@ -328,7 +325,6 @@ int execute(unsigned int *addr)
   {
     if (advance(p1, p2))
     {
-      loc1 = p1;
         print_matched_line(addr);
         break;
     }
