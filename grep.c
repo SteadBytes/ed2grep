@@ -303,7 +303,7 @@ int execute(unsigned int *addr)
   {
     loc1 = p1;
       if (advance(p1, p2 + 1))
-        puts(linebuf);
+        print_matched_line(addr);
       continue;
   }
   /* fast check for first character */
@@ -317,6 +317,7 @@ int execute(unsigned int *addr)
       if (advance(p1, p2))
       {
         loc1 = p1;
+          print_matched_line(addr);
           break;
       }
     } while (*p1++);
@@ -328,6 +329,7 @@ int execute(unsigned int *addr)
     if (advance(p1, p2))
     {
       loc1 = p1;
+        print_matched_line(addr);
         break;
     }
   } while (*p1++);
@@ -533,4 +535,12 @@ void putchr(int ac)
     return;
   }
   linp = lp;
+}
+  linp = lp;
+}
+
+void print_matched_line(char *f)
+{
+  /* TODO: If multiple files -> print filename (*f) first */
+  puts(linebuf);
 }
