@@ -74,6 +74,7 @@ int getchr(void);
 void init(void);
 void puts(char *sp);
 void quit(int n);
+void print_matched_line(char *f);
 
 
 /* argc = argument count
