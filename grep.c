@@ -27,9 +27,6 @@ int lastc;
 char linebuf[LBSIZE];   /* buffer of current line */
 char expbuf[ESIZE + 4]; /* buffer to hold regular expression */
 long count;
-int io;
-int pflag; /* if true at beginning of commands loop -> print current buffer */
-long lseek(int, long, int);
 int open(char *, int);
 int read(int, char *, int);
 int write(int, char *, int);
@@ -38,20 +35,16 @@ int exit(int);
 
 int oflag; /* output to file */
 int listf;
-int listn;
 int col;
-char *globp;
 char *loc2;
 char *braslist[NBRA];
 char *braelist[NBRA];
 int nbra;
-int wrapp;
 
 int advance(char *lp, char *ep);
 int backref(int i, char *lp);
 int cclass(char *set, int c, int af);
 void compile(char *eof);
-void error(char *s);
 int execute(char *file);
 int getchr(void);
 void init(void);
@@ -76,32 +69,6 @@ int main(int argc, char *argv[])
   execute((char *)NULL);
 
   return 0;
-}
-
-void error(char *s)
-{
-  int c;
-
-  wrapp = 0;
-  listf = 0;
-  listn = 0;
-  putchr('?');
-  puts(s);
-  count = 0;
-  lseek(0, (long)0, 2);
-  pflag = 0;
-  if (globp)
-    lastc = '\n';
-  globp = 0;
-  peekc = lastc;
-  if (lastc)
-    while ((c = getchr()) != '\n' && c != EOF)
-      ;
-  if (io > 0)
-  {
-    close(io);
-    io = -1;
-  }
 }
 
 int getchr(void)
@@ -244,7 +211,7 @@ void compile(char *eof)
 cerror:
   expbuf[0] = 0;
   nbra = 0;
-  error(Q);
+  exit(2);
 }
 
 /* TODO: file should be 0 (stdin) - will be able to point to file eventually*/
@@ -369,7 +336,7 @@ int advance(char *lp, char *ep)
 
     case CBACK:
       if (braelist[i = *ep++] == 0)
-        error(Q);
+        return(0);
       if (backref(i, lp))
       {
         lp += braelist[i] - braslist[i];
@@ -379,7 +346,7 @@ int advance(char *lp, char *ep)
 
     case CBACK | STAR:
       if (braelist[i = *ep++] == 0)
-        error(Q);
+        return(0);
       curlp = lp;
       while (backref(i, lp))
         lp += braelist[i] - braslist[i];
@@ -422,7 +389,7 @@ int advance(char *lp, char *ep)
       return (0);
 
     default:
-      error(Q);
+      exit(2);
     }
 }
 
