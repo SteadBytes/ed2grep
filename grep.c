@@ -33,7 +33,6 @@ int write(int, char *, int);
 int close(int);
 int exit(int);
 
-int oflag; /* output to file */
 int listf;
 int col;
 char *loc2;
@@ -478,7 +477,7 @@ void putchr(int ac)
   if (c == '\n' || lp >= &line[64])
   {
     linp = line;
-    write(oflag ? 2 : 1, line, lp - line);
+    write(1, line, lp - line);
     return;
   }
   linp = lp;
