@@ -1,5 +1,4 @@
 #define NULL 0
-#define FNSIZE 128
 #define LBSIZE 4096
 #define ESIZE 256
 #define NBRA 5
@@ -18,7 +17,6 @@
 
 #define STAR 01
 
-char Q[] = "";
 #define READ 0
 #define WRITE 1
 
@@ -26,7 +24,6 @@ int peekc;
 int lastc;
 char linebuf[LBSIZE];   /* buffer of current line */
 char expbuf[ESIZE + 4]; /* buffer to hold regular expression */
-long count;
 int open(char *, int);
 int read(int, char *, int);
 int write(int, char *, int);
@@ -35,7 +32,6 @@ int exit(int);
 
 int listf;
 int col;
-char *loc2;
 char *braslist[NBRA];
 char *braelist[NBRA];
 int nbra;
@@ -49,7 +45,6 @@ int getchr(void);
 void init(void);
 void putchr(int ac);
 void puts(char *sp);
-void quit(int n);
 void print_matched_line(char *file);
 
 /* argc = argument count
@@ -306,7 +301,6 @@ int advance(char *lp, char *ep)
       return (0);
 
     case CEOF:
-      loc2 = lp;
       return (1);
 
     case CCL:
