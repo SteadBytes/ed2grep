@@ -22,8 +22,8 @@
 
 int peekc;
 int lastc;
-char linebuf[LBSIZE];   /* buffer of current line */
-char expbuf[ESIZE + 4]; /* buffer to hold regular expression */
+char linebuf[LBSIZE];
+char expbuf[ESIZE + 4];
 int open(char *, int);
 int read(int, char *, int);
 int write(int, char *, int);
@@ -42,13 +42,10 @@ int cclass(char *set, int c, int af);
 void compile(char *eof);
 int execute(char *file);
 int getchr(void);
-void init(void);
 void putchr(int ac);
 void puts(char *sp);
 void print_matched_line(char *file);
 
-/* argc = argument count
-   argv = argument vector */
 int main(int argc, char *argv[])
 {
   argc--;
@@ -208,7 +205,6 @@ cerror:
   exit(2);
 }
 
-/* TODO: file should be 0 (stdin) - will be able to point to file eventually*/
 int execute(char *file)
 {
   char *p1, *p2;
@@ -221,24 +217,18 @@ int execute(char *file)
   }
   for (;;)
   {
-    /* track number of lines? */
     p1 = linebuf;
 
     while ((c = getchr()) != '\n')
     {
       if (c == EOF)
-      {
-        /* TODO: handle multiple files */
         return;
-      }
 
       *p1++ = c;
       /* ensure at least one space left in buffer for null-termination */
       if (p1 >= &linebuf[LBSIZE - 1])
-  {
         break;
       }
-  }
     /* null terminate input */
     *p1++ = '\0';
     p1 = linebuf;
