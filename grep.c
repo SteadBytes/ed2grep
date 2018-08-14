@@ -55,6 +55,7 @@ void error(char *s);
 int execute(char *file);
 int getchr(void);
 void init(void);
+void putchr(int ac);
 void puts(char *sp);
 void quit(int n);
 void print_matched_line(char *file);
