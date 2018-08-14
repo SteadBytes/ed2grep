@@ -130,7 +130,7 @@ void compile(char *eof)
     peekc = c;
   lastep = 0;
 
-  if (sp == '^')
+  if (sp == "^")
   {
     sp++;
     *ep++ = CCIRC;
