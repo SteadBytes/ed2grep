@@ -49,6 +49,27 @@ if test $? -ne 1 ; then
   fail=1
 fi
 
+# should return 2 syntax error
+out=$(echo "abcd" | grep "[:THIS-ISNT-A-CHAR-CLASS:]")
+if test $? -ne 2 ; then
+  echo "Status: Wrong status code, test \#7 failed"
+  fail=1
+fi
+
+echo "abcd" > test.txt
+out=$(grep "[:THIS-ISNT-A-CHAR-CLASS:]" test.txt)
+if test $? -ne 2 ; then
+  echo "Status: Wrong status code, test \#8 failed"
+  fail=1
+fi
+
+# should return 2 inaccessible files
+out=$(grep "abcd" none-existent-file.txt)
+if test $? -ne 2 ; then
+  echo "Status: Wrong status code, test \#9 failed"
+  fail=1
+fi
+
 rm -f test.txt
 
 exit $fail
