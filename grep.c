@@ -51,15 +51,11 @@ int main(int argc, char *argv[])
   argc--;
   argv++;
 
-  /* currently accept only 1 file */
-  if (argc > 2)
-    exit(2);
-
   compile(*argv);
   --argc;
   if (argc <= 0) {
-  execute((char *)NULL);
-  } else {
+    execute((char *)NULL);
+  } else while (--argc >= 0) {
     argv++;
     execute(*argv);
   }
@@ -241,43 +237,43 @@ int execute(char *file)
       /* ensure at least one space left in buffer for null-termination */
       if (p1 >= &linebuf[LBSIZE - 1])
         break;
-      }
+    }
     /* null terminate input */
     *p1++ = '\0';
     p1 = linebuf;
     p2 = expbuf;
-  if (*p2 == CCIRC)
-  {
-      if (advance(p1, p2 + 1))
-        print_matched_line(file);
-      continue;
-  }
+    if (*p2 == CCIRC)
+    {
+        if (advance(p1, p2 + 1))
+          print_matched_line(file);
+        continue;
+    }
   /* fast check for first character */
-  if (*p2 == CCHR)
-  {
-    c = p2[1];
+    if (*p2 == CCHR)
+    {
+      c = p2[1];
+      do
+      {
+        if (*p1 != c)
+          continue;
+        if (advance(p1, p2))
+        {
+            print_matched_line(file);
+            break;
+        }
+      } while (*p1++);
+        continue;
+    }
+    /* regular algorithm */
     do
     {
-      if (*p1 != c)
-        continue;
       if (advance(p1, p2))
       {
           print_matched_line(file);
           break;
       }
     } while (*p1++);
-      continue;
   }
-  /* regular algorithm */
-  do
-  {
-    if (advance(p1, p2))
-    {
-        print_matched_line(file);
-        break;
-    }
-  } while (*p1++);
-}
 }
 
 int advance(char *lp, char *ep)
