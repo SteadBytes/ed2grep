@@ -51,14 +51,18 @@ int main(int argc, char *argv[])
   argc--;
   argv++;
 
-  /* currently accept only regex as argument */
-  if (argc != 1)
+  /* currently accept only 1 file */
+  if (argc > 2)
     exit(2);
 
   compile(*argv);
-
+  --argc;
+  if (argc <= 0) {
   execute((char *)NULL);
-
+  } else {
+    argv++;
+    execute(*argv);
+  }
   return 0;
 }
 
@@ -209,6 +213,15 @@ int execute(char *file)
 {
   char *p1, *p2;
   int c;
+  int f;
+
+  if (file) {
+    if ((f = open(file, READ)) == -1) {
+      exit(2);
+    }
+  } else {
+    f = 0;
+  }
 
   for (c = 0; c < NBRA; c++)
   {
@@ -219,7 +232,7 @@ int execute(char *file)
   {
     p1 = linebuf;
 
-    while ((c = getchr(0)) != '\n')
+    while ((c = getchr(f)) != '\n')
     {
       if (c == EOF)
         return;
@@ -266,6 +279,7 @@ int execute(char *file)
   } while (*p1++);
 }
 }
+
 int advance(char *lp, char *ep)
 {
   char *curlp;
