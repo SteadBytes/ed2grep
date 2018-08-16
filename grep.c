@@ -41,7 +41,7 @@ int backref(int i, char *lp);
 int cclass(char *set, int c, int af);
 void compile(char *eof);
 int execute(char *file);
-int getchr(void);
+int getchr(int f);
 void putchr(int ac);
 void puts(char *sp);
 void print_matched_line(char *file);
@@ -62,10 +62,10 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-int getchr(void)
+int getchr(int f)
 {
   char c;
-  if (read(0, &c, 1) <= 0)
+  if (read(f, &c, 1) <= 0)
     return (lastc = EOF);
   lastc = c & 0177;
   return (lastc);
@@ -219,7 +219,7 @@ int execute(char *file)
   {
     p1 = linebuf;
 
-    while ((c = getchr()) != '\n')
+    while ((c = getchr(0)) != '\n')
     {
       if (c == EOF)
         return;
