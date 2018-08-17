@@ -43,6 +43,7 @@ void compile(char *eof);
 int execute(char *file);
 int getchr(int f);
 void putchr(int ac);
+void print(char *sp);
 void puts(char *sp);
 void print_matched_line(char *file);
 
@@ -410,11 +411,16 @@ int cclass(char *set, int c, int af)
   return (!af);
 }
 
+void print(char *sp)
+{
+  while (*sp)
+    putchr(*sp++);
+}
+
 void puts(char *sp)
 {
   col = 0;
-  while (*sp)
-    putchr(*sp++);
+  print(sp);
   putchr('\n');
 }
 
