@@ -35,6 +35,7 @@ int col;
 char *braslist[NBRA];
 char *braelist[NBRA];
 int nbra;
+int nfiles;
 
 int advance(char *lp, char *ep);
 int backref(int i, char *lp);
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
   argv++;
 
   compile(*argv);
-  --argc;
+  nfiles = --argc;
   if (argc <= 0) {
     execute((char *)NULL);
   } else while (--argc >= 0) {
@@ -485,6 +486,9 @@ void putchr(int ac)
 
 void print_matched_line(char *file)
 {
-  /* TODO: If multiple files -> print filename (*file) first */
+  if(nfiles > 1) {
+    print(file);
+    print(":");
+  }
   puts(linebuf);
 }
