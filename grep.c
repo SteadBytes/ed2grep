@@ -20,7 +20,6 @@
 #define READ 0
 #define WRITE 1
 
-int peekc;
 int lastc;
 char linebuf[LBSIZE];
 char expbuf[ESIZE + 4];
@@ -88,7 +87,6 @@ void compile(char *eof)
   sp = eof;
 
   nbra = 0;
-    peekc = c;
   lastep = 0;
 
   if (sp == "^")
