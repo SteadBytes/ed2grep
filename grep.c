@@ -98,7 +98,7 @@ void compile(char *eof)
   for (;;)
   {
     if (ep >= &expbuf[ESIZE])
-      goto cerror;
+      exit(2);
     if ((c = *sp++) != '*')
       lastep = ep;
     switch (c)
@@ -111,7 +111,7 @@ void compile(char *eof)
       if ((c = *sp++) == '(')
       {
         if (nbra >= NBRA)
-          goto cerror;
+          exit(2);
         *bracketp++ = nbra;
         *ep++ = CBRA;
         *ep++ = nbra++;
@@ -120,7 +120,7 @@ void compile(char *eof)
       if (c == ')')
       {
         if (bracketp <= bracket)
-          goto cerror;
+          exit(2);
         *ep++ = CKET;
         *ep++ = *--bracketp;
         continue;
@@ -133,7 +133,7 @@ void compile(char *eof)
       }
       *ep++ = CCHR;
       if (c == '\n')
-        goto cerror;
+        exit(2);
       *ep++ = c;
       continue;
 
@@ -142,7 +142,7 @@ void compile(char *eof)
       continue;
 
     case '\n':
-      goto cerror;
+      exit(2);
 
     case '*':
       if (lastep == 0 || *lastep == CBRA || *lastep == CKET)
@@ -168,7 +168,7 @@ void compile(char *eof)
       do
       {
         if (c == '\n')
-          goto cerror;
+          exit(2);
         if (c == '-' && ep[-1] != 0)
         {
           if ((c = *sp++) == ']')
@@ -183,13 +183,13 @@ void compile(char *eof)
             ep++;
             cclcnt++;
             if (ep >= &expbuf[ESIZE])
-              goto cerror;
+              exit(2);
           }
         }
         *ep++ = c;
         cclcnt++;
         if (ep >= &expbuf[ESIZE])
-          goto cerror;
+          exit(2);
       } while ((c = *sp++) != ']');
       lastep[1] = cclcnt;
       continue;
@@ -200,10 +200,6 @@ void compile(char *eof)
       *ep++ = c;
     }
   }
-cerror:
-  expbuf[0] = 0;
-  nbra = 0;
-  exit(2);
 }
 
 int execute(char *file)
