@@ -36,6 +36,7 @@ char *braslist[NBRA];
 char *braelist[NBRA];
 int nbra;
 int nfiles;
+int found_match;
 
 int advance(char *lp, char *ep);
 int backref(int i, char *lp);
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
     argv++;
     execute(*argv);
   }
-  return 0;
+  exit(found_match == 0);
 }
 
 int getchr(int f)
@@ -486,6 +487,7 @@ void putchr(int ac)
 
 void print_matched_line(char *file)
 {
+  found_match = 1;
   if(nfiles > 1) {
     print(file);
     print(":");
