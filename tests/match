@@ -33,15 +33,14 @@ if test "$out" != "Hello,"; then
 fi
 
 # TODO: Test all character classes
-# basic punctuation matches
-out=$(echo "Hello, world"| grep "[[:punct:]]")
+out=$(echo "Hello, world"| grep "[:space:]")
 if test "$out" != "Hello, world"; then
   echo "Match output incorrect, test \#5 failed"
   fail=1
 fi
 
 echo "Hello, world" > test.txt
-out=$(grep "[[:punct:]]" test.txt)
+out=$(grep "[:space:]" test.txt)
 if test "$out" != "Hello, world"; then
   echo "Match output incorrect, test \#6 failed"
   fail=1
