@@ -153,7 +153,7 @@ void compile(char *eof)
       continue;
 
     case '$':
-      if ((peekc = *sp++) != eof && peekc != '\n')
+      if (*sp != '\0')
         goto defchar;
       *ep++ = CDOL;
       continue;
