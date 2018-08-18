@@ -80,6 +80,7 @@ void compile(char *eof)
   char *lastep;
   char bracket[NBRA], *bracketp;
   int cclcnt;
+  int defchar;
 
   ep = expbuf;
   bracketp = bracket;
@@ -97,6 +98,7 @@ void compile(char *eof)
 
   for (;;)
   {
+    defchar = 0;
     if (ep >= &expbuf[ESIZE])
       exit(2);
     if ((c = *sp++) != '*')
@@ -145,16 +147,23 @@ void compile(char *eof)
       exit(2);
 
     case '*':
-      if (lastep == 0 || *lastep == CBRA || *lastep == CKET)
-        goto defchar;
-      *lastep |= STAR;
-      continue;
+      if (lastep == 0 || *lastep == CBRA || *lastep == CKET) {
+        defchar = 1;
+      } else {
+        *lastep |= STAR;
+        continue;
+      }
+      
 
     case '$':
       if (*sp != '\0')
-        goto defchar;
-      *ep++ = CDOL;
-      continue;
+      {
+        defchar = 1;
+      } else {
+        *ep++ = CDOL;
+        continue;
+      }
+      
 
     case '[':
       *ep++ = CCL;
@@ -194,8 +203,12 @@ void compile(char *eof)
       lastep[1] = cclcnt;
       continue;
 
-    defchar:
     default:
+      defchar = 1;
+    }
+
+    if (defchar)
+    {
       *ep++ = CCHR;
       *ep++ = c;
     }
