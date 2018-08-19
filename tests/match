@@ -19,14 +19,14 @@ if test "$out" != "Hello, world"; then
 fi
 
 # basic literal string multiline matches
-out=$(echo $'Hello,\n world' | grep "Hello")
+out=$(echo -e "Hello,\n world" | grep "Hello")
 if test "$out" != "Hello,"; then
   echo "Match output incorrect, test \#3 failed"
   fail=1
 fi
 
-echo $'Hello,\n world' > test.txt
-out=$( grep "Hello" test.txt)
+echo -e 'Hello,\n world' > test.txt
+out=$(grep "Hello" test.txt)
 if test "$out" != "Hello,"; then
   echo "Match output incorrect, test \#4 failed"
   fail=1
