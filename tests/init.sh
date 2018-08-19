@@ -6,7 +6,7 @@ path_prepend_ ()
 {
   while test $# != 0; do
     path_dir_=$1
-    PATH="$abs_path_dir_:$PATH"
+    PATH="$path_dir_:$PATH"
     shift
   done
   export PATH

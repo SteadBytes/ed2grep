@@ -1,6 +1,6 @@
 #! /bin/sh
 
-. "${srcdir=.}/init.sh"; path_prepend_ ../
+. "${srcdir=.}/init.sh"; path_prepend_ $exedir
 
 fail=0
 
