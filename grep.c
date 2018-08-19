@@ -38,6 +38,7 @@ int nfiles;
 int found_match;
 
 int advance(char *lp, char *ep);
+int star(char *lp, char *ep, char *curlp);
 int backref(int i, char *lp);
 int cclass(char *set, int c, int af);
 void compile(char *eof);
@@ -365,14 +366,14 @@ int advance(char *lp, char *ep)
       curlp = lp;
       while (*lp++)
         ;
-      goto star;
+      return star(lp, ep, curlp);
 
     case CCHR | STAR:
       curlp = lp;
       while (*lp++ == *ep)
         ;
       ep++;
-      goto star;
+      return star(lp, ep, curlp);
 
     case CCL | STAR:
     case NCCL | STAR:
@@ -380,20 +381,22 @@ int advance(char *lp, char *ep)
       while (cclass(ep, *lp++, ep[-1] == (CCL | STAR)))
         ;
       ep += *ep;
-      goto star;
-
-    star:
-      do
-      {
-        lp--;
-        if (advance(lp, ep))
-          return (1);
-      } while (lp > curlp);
-      return (0);
+      return star(lp, ep, curlp);
 
     default:
       exit(2);
     }
+}
+
+int star(char *lp, char *ep, char *curlp)
+{
+  do
+  {
+    lp--;
+    if (advance(lp, ep))
+      return (1);
+  } while (lp > curlp);
+  return (0);
 }
 
 int backref(int i, char *lp)
