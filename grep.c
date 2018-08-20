@@ -18,7 +18,6 @@
 #define STAR 01
 
 #define READ 0
-#define WRITE 1
 
 int lastc;
 char linebuf[LBSIZE];
@@ -29,7 +28,6 @@ int write(int, char *, int);
 int close(int);
 int exit(int);
 
-int listf;
 int col;
 char *braslist[NBRA];
 char *braelist[NBRA];
@@ -446,45 +444,6 @@ void putchr(int ac)
 
   lp = linp;
   c = ac;
-  if (listf)
-  {
-    if (c == '\n')
-    {
-      if (linp != line && linp[-1] == ' ')
-      {
-        *lp++ = '\\';
-        *lp++ = 'n';
-      }
-    }
-    else
-    {
-      if (col > (72 - 4 - 2))
-      {
-        col = 8;
-        *lp++ = '\\';
-        *lp++ = '\n';
-        *lp++ = '\t';
-      }
-      col++;
-      if (c == '\b' || c == '\t' || c == '\\')
-      {
-        *lp++ = '\\';
-        if (c == '\b')
-          c = 'b';
-        else if (c == '\t')
-          c = 't';
-        col++;
-      }
-      else if (c < ' ' || c == '\177')
-      {
-        *lp++ = '\\';
-        *lp++ = (c >> 6) + '0';
-        *lp++ = ((c >> 3) & 07) + '0';
-        c = (c & 07) + '0';
-        col += 3;
-      }
-    }
-  }
   *lp++ = c;
   if (c == '\n' || lp >= &line[64])
   {
