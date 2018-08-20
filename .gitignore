@@ -1,3 +1,7 @@
 *.o
+*.gcov
+
+# Build dirs
 debug/
 release/
+test/

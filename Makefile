@@ -19,9 +19,15 @@ RELEASEEXE = $(RELEASEDIR)/$(EXE)
 RELEASEOBJECTS = $(addprefix $(RELEASEDIR)/, $(OBJECTS))
 RELEASECFLAGS = -O3 -DNDEBUG
 
-# Test settings
-TESTDIR = tests
-TESTS = $(shell find $(TESTDIR)/ -type f ! -name "*.*")
+# Test build settings
+TESTDIR = test
+TESTEXE = $(TESTDIR)/$(EXE)
+TESTOBJECTS = $(addprefix $(TESTDIR)/, $(OBJECTS))
+TESTCFLAGS = -fprofile-arcs -ftest-coverage
+
+# Test suite settings
+TESTSDIR = tests
+TESTS = $(shell find $(TESTSDIR)/ -type f ! -name "*.*")
 
 .PHONY: all clean debug prep release remake test
 
@@ -46,9 +52,18 @@ $(DEBUGEXE): $(DEBUGOBJECTS)
 $(DEBUGDIR)/%.o: %.c
 		$(CC) -c $(CFLAGS) $(DEBUGCFLAGS) -o $@ $<
 
+# Test build rules
+test: $(TESTEXE)
+
+$(TESTEXE): $(TESTOBJECTS)
+	$(CC) $(CFLAGS) $(TESTCFLAGS) -o $(TESTEXE) $^
+
+$(TESTDIR)/%.o: %.c
+		$(CC) -c $(CFLAGS) $(TESTCFLAGS) -o $@ $<
+
 # Other rules
 prep:
-		@mkdir -p $(DEBUGDIR) $(RELEASEDIR)
+		@mkdir -p $(DEBUGDIR) $(RELEASEDIR) $(TESTDIR)
 	
 remake: clean all
 
@@ -56,14 +71,18 @@ clean:
 		rm -f $(RELEASEEXE) $(RELEASEOBJECTS) $(DEBUGEXE) $(DEBUGOBJECTS)
 
 check:
+	make test
 	fail=0; \
 	for test in $(TESTS); do \
-		export srcdir="$(TESTDIR)"; \
-		export exedir="$(RELEASEDIR)"; \
+		export srcdir="$(TESTSDIR)"; \
+		export exedir="$(TESTDIR)"; \
 		echo Running $$test...; \
 		(. $$test) | sed -e 's/^/	/'; \
 		if [ $${PIPESTATUS[0]} -ne 0 ]; then \
 			echo $$test failed!; fail=1; \
 		fi; \
 	done; \
+	if [ $$fail -eq 0 ]; then \
+		gcov grep.c -o "$(TESTDIR)"; \
+	fi; \
 	exit $$fail
