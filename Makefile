@@ -7,20 +7,22 @@ SOURCES = grep.c
 OBJECTS = $(SOURCES:.c=.o)
 EXE = grep
 
+BUILDSDIR = build
+
 # Debug build settings
-DEBUGDIR = debug
+DEBUGDIR = $(BUILDSDIR)/debug
 DEBUGEXE = $(DEBUGDIR)/$(EXE)
 DEBUGOBJECTS = $(addprefix $(DEBUGDIR)/, $(OBJECTS))
 DEBUGCFLAGS = -O0 -ggdb3 -DDEBUG
 
 # Release build settings
-RELEASEDIR = release
+RELEASEDIR = $(BUILDSDIR)/release
 RELEASEEXE = $(RELEASEDIR)/$(EXE)
 RELEASEOBJECTS = $(addprefix $(RELEASEDIR)/, $(OBJECTS))
 RELEASECFLAGS = -O3 -DNDEBUG
 
 # Test build settings
-TESTDIR = test
+TESTDIR = $(BUILDSDIR)/test
 TESTEXE = $(TESTDIR)/$(EXE)
 TESTOBJECTS = $(addprefix $(TESTDIR)/, $(OBJECTS))
 TESTCFLAGS = -fprofile-arcs -ftest-coverage
