@@ -1,17 +1,11 @@
 #!/bin/sh
 
-set_fail()
-{
-  fail=1
-}
 
 finish()
 {
   rm -f test.txt
-  fail=0
 }
 
-trap set_fail ERR
 
 trap finish EXIT
 
@@ -39,6 +33,7 @@ output_test_failure()
 
 match_test()
 {
+  test_fail=0
   input=$1
   pattern=$2
   expected=$3
@@ -47,21 +42,26 @@ match_test()
   out=$(echo -e "$input" | grep "$pattern")
   if test "$out" != "$expected"; then
     output_test_failure "$input" "$pattern" "$expected" "$name (stdin)"
-    return 1
+    test_fail=1
   fi
 
   echo -e "$input" > test.txt 
   out=$(grep "$pattern" test.txt)
   if test "$out" != "$expected"; then
     output_test_failure "$input" "$pattern" "$expected" "${name} (file)"
-    return 1
+    test_fail=1
   fi
 
-  return 0
+  if [ $fail -eq 0 ] && [ $test_fail -eq 1 ]; then
+    fail=1
+  fi
+
+  return $test_fail
 }
 
 status_test()
 {
+  test_fail=0
   input=$1
   pattern=$2
   status=$3
@@ -70,15 +70,19 @@ status_test()
   out=$(echo -e "$input" | grep "$pattern")
   if test $? -ne $status; then
     output_test_failure "$input" "$pattern" $status "$name (stdin)"
-    return 1
+    test_fail=1
   fi
 
   echo -e "$input" > test.txt 
   out=$(grep "$pattern" test.txt)
   if test $? -ne $status; then
     output_test_failure "$input" "$pattern" $status "${name} (file)"
-    return 1
+    test_fail=1
   fi
 
-  return 0
+  if [ $fail -eq 0 ] && [ $test_fail -eq 1 ]; then
+    fail=1
+  fi
+
+  return $test_fail
 }

@@ -38,10 +38,10 @@ status=2
 status_test "$input" "$pattern" $status "${test_name} 5"
 
 # should return 2 inaccessible files
-# out=$(grep "abcd" none-existent-file.txt)
-# if test $? -ne 2 ; then
-#   echo "Status: Wrong status code, test \#9 failed"
-#   fail=1
-# fi
+out=$(grep "abcd" none-existent-file.txt)
+if test $? -ne 2 ; then
+  echo "Status: Wrong status code, test \#9 failed"
+  fail=1
+fi
 
 exit $fail
