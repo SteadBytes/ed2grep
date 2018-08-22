@@ -1,0 +1,14 @@
+#! /bin/sh
+
+. "${srcdir=.}/init.sh"; path_prepend_ $exedir
+
+fail=0
+test_name="char-class"
+
+# TODO: Test all character classes
+input="Hello, world"
+pattern="[:space:]"
+expected="Hello, world"
+match_test "$input" "$pattern" "$expected" "${test_name} 1"
+
+exit $fail

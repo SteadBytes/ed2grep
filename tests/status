@@ -3,15 +3,13 @@
 . "${srcdir=.}/init.sh"; path_prepend_ $exedir
 
 fail=0
+test_name="status"
 
 # empty input
-
-# should return 0 found a match
-out=$(echo "" | grep "")
-if test $? -ne 0 ; then
-  echo "Status: Wrong status code, test \#1 failed"
-  fail=1
-fi
+input=""
+pattern=""
+status=0
+status_test "$input" "$pattern" $status "${test_name} 1"
 
 out=$(grep "" /dev/null)
 if test $? -ne 1 ; then
@@ -22,54 +20,28 @@ fi
 # non-empty input
 
 # should return 0 found a match
-out=$(echo "abcd" | grep "abcd") #> /dev/null 2>&1
-if test $? -ne 0 ; then
-  echo "Status: Wrong status code, test \#3 failed"
-  fail=1
-fi
-
-echo "abcd" > test.txt
-out=$(grep "abcd" test.txt)# > /dev/null 2>&1
-if test $? -ne 0 ; then
-  echo "Status: Wrong status code, test \#4 failed"
-  fail=1
-fi
+input="abcd"
+pattern="abcd"
+status=0
+status_test "$input" "$pattern" $status "${test_name} 3"
 
 # should return 1 found no match
-out=$(echo "abcd" | grep "1234")
-if test $? -ne 1 ; then
-  echo "Status: Wrong status code, test \#5 failed"
-  fail=1
-fi
-
-echo "abcd" > test.txt
-out=$(grep "1234" test.txt)
-if test $? -ne 1 ; then
-  echo "Status: Wrong status code, test \#6 failed"
-  fail=1
-fi
+input="abcd"
+pattern="1234"
+status=1
+status_test "$input" "$pattern" $status "${test_name} 4"
 
 # should return 2 syntax error
-out=$(echo "abcd" | grep "[:lower:")
-if test $? -ne 2 ; then
-  echo "Status: Wrong status code, test \#7 failed"
-  fail=1
-fi
-
-echo "abcd" > test.txt
-out=$(grep "[:lower:" test.txt)
-if test $? -ne 2 ; then
-  echo "Status: Wrong status code, test \#8 failed"
-  fail=1
-fi
+input="abcd"
+pattern="[:lower:"
+status=2
+status_test "$input" "$pattern" $status "${test_name} 5"
 
 # should return 2 inaccessible files
-out=$(grep "abcd" none-existent-file.txt)
-if test $? -ne 2 ; then
-  echo "Status: Wrong status code, test \#9 failed"
-  fail=1
-fi
-
-rm -f test.txt
+# out=$(grep "abcd" none-existent-file.txt)
+# if test $? -ne 2 ; then
+#   echo "Status: Wrong status code, test \#9 failed"
+#   fail=1
+# fi
 
 exit $fail

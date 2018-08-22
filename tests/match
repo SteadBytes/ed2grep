@@ -3,63 +3,24 @@
 . "${srcdir=.}/init.sh"; path_prepend_ $exedir
 
 fail=0
+test_name="match"
 
 # basic literal string matches
-out=$(echo "Hello, world" | grep "Hello")
-if test "$out" != "Hello, world"; then
-  echo "Match output incorrect, test \#1 failed"
-  fail=1
-fi
-
-echo "Hello, world" > test.txt
-out=$(grep "Hello" test.txt)
-if test "$out" != "Hello, world"; then
-  echo "Match output incorrect, test \#2 failed"
-  fail=1
-fi
+input="Hello, world"
+pattern="Hello"
+expected="Hello, world"
+match_test "$input" "$pattern" "$expected" "${test_name} 1"
 
 # basic literal string multiline matches
-out=$(echo -e "Hello,\n world" | grep "Hello")
-if test "$out" != "Hello,"; then
-  echo "Match output incorrect, test \#3 failed"
-  fail=1
-fi
-
-echo -e 'Hello,\n world' > test.txt
-out=$(grep "Hello" test.txt)
-if test "$out" != "Hello,"; then
-  echo "Match output incorrect, test \#4 failed"
-  fail=1
-fi
-
-# TODO: Test all character classes
-out=$(echo "Hello, world"| grep "[:space:]")
-if test "$out" != "Hello, world"; then
-  echo "Match output incorrect, test \#5 failed"
-  fail=1
-fi
-
-echo "Hello, world" > test.txt
-out=$(grep "[:space:]" test.txt)
-if test "$out" != "Hello, world"; then
-  echo "Match output incorrect, test \#6 failed"
-  fail=1
-fi
+input="Hello,\n world"
+pattern="Hello"
+expected="Hello,"
+match_test "$input" "$pattern" "$expected" "${test_name} 2"
 
 # anchor matches
-out=$(echo "Hello, world"| grep "^world")
-if test "$out" != ""; then
-  echo "Match output incorrect, test \#7 failed"
-  fail=1
-fi
-
-echo "Hello, world" > test.txt
-out=$(grep "^world" test.txt)
-if test "$out" != ""; then
-  echo "Match output incorrect, test \#8 failed"
-  fail=1
-fi
-
-rm -f test.txt
+input="Hello, world"
+pattern="^world"
+expected=""
+match_test "$input" "$pattern" "$expected" "${test_name} 3"
 
 exit $fail
