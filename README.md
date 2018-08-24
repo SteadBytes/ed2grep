@@ -2,6 +2,8 @@
 
 http://www.cs.princeton.edu/courses/archive/spr08/cos333/ed_to_grep.html
 
+Unix 10th edition `ed` man page: http://man.cat-v.org/unix_10th/1/ed
+
 ## Requirements
 
 - Use `ed.c` regular expression processing to build a version of `grep`
