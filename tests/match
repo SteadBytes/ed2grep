@@ -90,6 +90,27 @@ pattern="[^a-zA-Z,]"
 expected="1234\n?!"
 match_test "$input" "$pattern" "$expected" "${test_name} 15"
 
+# '*' matches 0 or more of preceding regex/pattern
+input="Hello,\n1234\n?!"
+pattern=".*"
+expected="Hello,\n1234\n?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 16"
+
+input="Hello,\n1234\n?!"
+pattern="H*"
+expected="Hello,\n1234\n?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 17"
+
+input="Hello,\n1234\n?!"
+pattern="[?!]*"
+expected="Hello,\n1234\n?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 18"
+
+input="Hello,\n1234\n?!"
+pattern="[0-9]*"
+expected="Hello,\n1234\n?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 19"
+
 
 # anchor matches
 input="Hello, world"
