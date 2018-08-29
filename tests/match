@@ -111,6 +111,31 @@ pattern="[0-9]*"
 expected="Hello,\n1234\n?!"
 match_test "$input" "$pattern" "$expected" "${test_name} 19"
 
+# capturing groups
+input="Hello,\n1234\n?!"
+pattern="\(Hello,\)"
+expected="Hello,"
+match_test "$input" "$pattern" "$expected" "${test_name} 20"
+
+input="Hello,\nHello!"
+pattern="\(Hello\)[,!]*"
+expected="Hello,\nHello!"
+match_test "$input" "$pattern" "$expected" "${test_name} 21"
+
+input="test.pdf\ntest.html\ntest2.pdf"
+pattern=".*\(\.pdf\)"
+expected="test.pdf\ntest2.pdf"
+match_test "$input" "$pattern" "$expected" "${test_name} 22"
+
+input="hello1\nhello!\nhello3\nhello10"
+pattern="hello\([0-9]*\)"
+expected="hello1\nhello!\nhello3\nhello10"
+match_test "$input" "$pattern" "$expected" "${test_name} 23"
+
+input="hello1\nhello!\nhello3\nhello10"
+pattern="hello\([0-9]\)"
+expected="hello1\nhello3\nhello10"
+match_test "$input" "$pattern" "$expected" "${test_name} 24"
 
 # anchor matches
 input="Hello, world"
