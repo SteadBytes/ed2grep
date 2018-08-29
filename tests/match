@@ -44,10 +44,57 @@ pattern="\?"
 expected="?!"
 match_test "$input" "$pattern" "$expected" "${test_name} 7"
 
+# bracket expressions
+input="Hello,\n1234\n?!"
+pattern="[H1]"
+expected="Hello,\n1234"
+match_test "$input" "$pattern" "$expected" "${test_name} 8"
+
+input="Hello,\n1234\n?!"
+pattern="[H!]"
+expected="Hello,\n?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 9"
+
+input="Hello,\n1234\n?!"
+pattern="[a-z0-9]"
+expected="Hello,\n1234"
+match_test "$input" "$pattern" "$expected" "${test_name} 10"
+
+input="Hello,\n1234\n?!"
+pattern="[0-9]"
+expected="1234"
+match_test "$input" "$pattern" "$expected" "${test_name} 11"
+
+input="Hello,\n1234\n?!"
+pattern="[?!]"
+expected="?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 12"
+
+input="Hello,\n1234\n?!"
+pattern="[A-Z]"
+expected="Hello,"
+match_test "$input" "$pattern" "$expected" "${test_name} 13"
+
+input="Hello,\n1234\n?!"
+pattern="[^0-9]"
+expected="Hello,\n?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 14"
+
+input="Hello,\n1234\n?!"
+pattern="[^!-@]"
+expected="Hello,"
+match_test "$input" "$pattern" "$expected" "${test_name} 15"
+
+input="Hello,\n1234\n?!"
+pattern="[^a-zA-Z,]"
+expected="1234\n?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 15"
+
+
 # anchor matches
 input="Hello, world"
 pattern="^world"
 expected=""
-match_test "$input" "$pattern" "$expected" "${test_name} 3"
+match_test "$input" "$pattern" "$expected" "${test_name} 4"
 
 exit $fail
