@@ -17,6 +17,17 @@ pattern="Hello"
 expected="Hello,"
 match_test "$input" "$pattern" "$expected" "${test_name} 2"
 
+# any character
+input="Hello, world"
+pattern="."
+expected="Hello, world"
+match_test "$input" "$pattern" "$expected" "${test_name} 3"
+
+input="Hello,\n1234\n?!"
+pattern="."
+expected="Hello,\n1234\n?!"
+match_test "$input" "$pattern" "$expected" "${test_name} 4"
+
 # anchor matches
 input="Hello, world"
 pattern="^world"
