@@ -137,6 +137,22 @@ pattern="hello\([0-9]\)"
 expected="hello1\nhello3\nhello10"
 match_test "$input" "$pattern" "$expected" "${test_name} 24"
 
+# numeric backreferences
+input="helloh\nhello! hello3 hello10"
+pattern="\([a-z]\)ello\1"
+expected="helloh"
+match_test "$input" "$pattern" "$expected" "${test_name} 25"
+
+input="He said:\n\"She's the one\""
+pattern="\(['\"]\).*\1"
+expected="\"She's the one\""
+match_test "$input" "$pattern" "$expected" "${test_name} 26"
+
+input="He said:\n'She is the one'"
+pattern="\(['\"]\).*\1"
+expected="'She is the one'"
+match_test "$input" "$pattern" "$expected" "${test_name} 27"
+
 # anchor matches
 input="Hello, world"
 pattern="^world"
